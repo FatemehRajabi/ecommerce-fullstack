@@ -32,10 +32,11 @@ This is a full-stack e-commerce web application built with **Spring Boot (Java)*
 
 src
 ├── main
-│ ├── java
-│ │ └── com.fatemeh.ecommerce.ecommerce
-│ │ ├── controller
-│ │ ├── model
-│ │ └── repository
-│ └── resources
-│ └── application.properties
+│   ├── java
+│   │   └── com.fatemeh.ecommerce.app
+│   │       ├── controller
+│   │       ├── model
+│   │       └── repository
+│   └── resources
+│       └── application.properties
+

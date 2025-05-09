@@ -1,6 +1,9 @@
 package com.fatemeh.ecommerce.ecommerce.controller;
 
+import com.fatemeh.ecommerce.ecommerce.model.Category;
 import com.fatemeh.ecommerce.ecommerce.model.Product;
+import com.fatemeh.ecommerce.ecommerce.model.ProductRequestDTO;
+import com.fatemeh.ecommerce.ecommerce.repository.CategoryRepository;
 import com.fatemeh.ecommerce.ecommerce.repository.ProductRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,10 +13,13 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductRepository productRepository;
 
-    public ProductController(ProductRepository productRepository){
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+
+    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository){
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -21,8 +27,25 @@ public class ProductController {
         return productRepository.findAll();
     }
 
+
+    /**
+     * Creates a new Product using data from a ProductRequestDTO.
+     * Retrieves the Category by ID and links it to the product.
+     * Saves the product to the database and returns the saved object.
+     */
     @PostMapping
-    public Product postProduct(@RequestBody Product product){
+    public Product postProduct(@RequestBody ProductRequestDTO dto){
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found."));
+
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setImageUrl(dto.getImageUrl());
+        product.setStock(dto.getStock());
+        product.setCategory(category);
+
         return productRepository.save(product);
     }
 

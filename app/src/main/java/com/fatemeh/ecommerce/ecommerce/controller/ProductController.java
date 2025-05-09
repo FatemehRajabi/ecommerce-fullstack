@@ -23,7 +23,10 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts(){
+    public List<Product> getAllProducts(@RequestParam(required = false) Integer categoryId){
+        if (categoryId != null) {
+            return productRepository.findByCategoryId(categoryId);
+        }
         return productRepository.findAll();
     }
 

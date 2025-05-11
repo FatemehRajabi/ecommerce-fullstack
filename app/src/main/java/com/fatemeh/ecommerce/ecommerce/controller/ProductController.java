@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
@@ -99,9 +100,17 @@ public class ProductController {
     public Product uploadImage(@PathVariable Long id, @RequestParam MultipartFile file) throws IOException {
         Product product = getProductById(id);
 
+        String originalFilename = file.getOriginalFilename();
+        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+        //      Generates a unique filename using UUID to prevent overwriting
+        String uniqueId = UUID.randomUUID().toString();
+        String newFilename = uniqueId + extension;
+
+
         String uploadDirectory = System.getProperty("user.dir") + "/uploads/";
-        String fileName = file.getOriginalFilename();
-        String fullPath = uploadDirectory + fileName;
+//        String fileName = file.getOriginalFilename();
+        String fullPath = uploadDirectory + newFilename;
 
         File uploadFolder = new File(uploadDirectory);
         if (!uploadFolder.exists()) {
@@ -111,7 +120,7 @@ public class ProductController {
         File destination = new File(fullPath);
         file.transferTo(destination);
 
-        product.setImageUrl("/uploads/" + fileName);
+        product.setImageUrl("/uploads/" + newFilename);
         return productRepository.save(product);
     }
 }

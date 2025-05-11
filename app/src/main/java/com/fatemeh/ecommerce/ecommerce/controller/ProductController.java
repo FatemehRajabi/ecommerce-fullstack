@@ -6,7 +6,10 @@ import com.fatemeh.ecommerce.ecommerce.model.ProductRequestDTO;
 import com.fatemeh.ecommerce.ecommerce.repository.CategoryRepository;
 import com.fatemeh.ecommerce.ecommerce.repository.ProductRepository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -79,6 +82,37 @@ public class ProductController {
     public void deleteProduct(@PathVariable Long id){
         getProductById(id);
         productRepository.deleteById(id);
+    }
+
+    @DeleteMapping
+    public void deleteAllProducts() {
+        productRepository.deleteAll();
+    }
+
+    /**
+     * Handles uploading a product image and saving it to the local filesystem:
+     * - Accepts a multipart file from the request
+     * - Builds a path to save the file under the /uploads directory
+     * - Transfers the file to the destination path
+     */
+    @PostMapping("/{id}/image")
+    public Product uploadImage(@PathVariable Long id, @RequestParam MultipartFile file) throws IOException {
+        Product product = getProductById(id);
+
+        String uploadDirectory = System.getProperty("user.dir") + "/uploads/";
+        String fileName = file.getOriginalFilename();
+        String fullPath = uploadDirectory + fileName;
+
+        File uploadFolder = new File(uploadDirectory);
+        if (!uploadFolder.exists()) {
+            uploadFolder.mkdirs(); // creates the folder if it doesn't exist
+        }
+
+        File destination = new File(fullPath);
+        file.transferTo(destination);
+
+        product.setImageUrl("/uploads/" + fileName);
+        return productRepository.save(product);
     }
 }
 

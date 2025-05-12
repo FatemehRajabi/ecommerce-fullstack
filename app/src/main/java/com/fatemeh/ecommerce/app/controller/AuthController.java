@@ -2,6 +2,7 @@ package com.fatemeh.ecommerce.app.controller;
 
 import com.fatemeh.ecommerce.app.model.*;
 import com.fatemeh.ecommerce.app.repository.UserRepository;
+import com.fatemeh.ecommerce.app.security.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,10 +16,12 @@ public class AuthController {
 
     UserRepository userRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder;
+    JwtUtil jwtUtil;
 
-    public AuthController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
+    public AuthController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JwtUtil jwtUtil){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/signup")
@@ -33,7 +36,7 @@ public class AuthController {
             user.setPassword(bcPassword);
             user.setRole(Role.USER);
             userRepository.save(user);
-            apiResponse.setMessage("User created!");
+            apiResponse.setMessage("User created! ");
             apiResponse.setSuccess(true);
             apiResponse.setTimestamp(LocalDateTime.now());
         } else {
@@ -55,7 +58,8 @@ public class AuthController {
             User user = userRepository.findByUsername(loginRequestDTO.getUsername()).get();
 
             if (bCryptPasswordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())){
-                apiResponse.setMessage("Logged in");
+                String token = jwtUtil.generateToken(user.getUsername());
+                apiResponse.setMessage("Logged in. Token: " + token);
                 apiResponse.setTimestamp(LocalDateTime.now());
                 apiResponse.setSuccess(true);
             } else {

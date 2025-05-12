@@ -1,7 +1,10 @@
 package com.fatemeh.ecommerce.app.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -32,4 +35,23 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token expired: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            System.out.println("Malformed token: " + e.getMessage());
+        } catch (SignatureException e) {
+            System.out.println("Invalid signature: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Token is null or empty: " + e.getMessage());
+        }
+        return false;
+    }
+
 }

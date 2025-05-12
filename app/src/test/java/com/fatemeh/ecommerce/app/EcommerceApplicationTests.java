@@ -1,4 +1,4 @@
-package com.fatemeh.ecommerce.ecommerce;
+package com.fatemeh.ecommerce.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.fatemeh.ecommerce.ecommerce;
+package com.fatemeh.ecommerce.app;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

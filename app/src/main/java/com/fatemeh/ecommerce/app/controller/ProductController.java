@@ -1,10 +1,10 @@
-package com.fatemeh.ecommerce.ecommerce.controller;
+package com.fatemeh.ecommerce.app.controller;
 
-import com.fatemeh.ecommerce.ecommerce.model.Category;
-import com.fatemeh.ecommerce.ecommerce.model.Product;
-import com.fatemeh.ecommerce.ecommerce.model.ProductRequestDTO;
-import com.fatemeh.ecommerce.ecommerce.repository.CategoryRepository;
-import com.fatemeh.ecommerce.ecommerce.repository.ProductRepository;
+import com.fatemeh.ecommerce.app.model.Category;
+import com.fatemeh.ecommerce.app.model.Product;
+import com.fatemeh.ecommerce.app.model.ProductRequestDTO;
+import com.fatemeh.ecommerce.app.repository.CategoryRepository;
+import com.fatemeh.ecommerce.app.repository.ProductRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

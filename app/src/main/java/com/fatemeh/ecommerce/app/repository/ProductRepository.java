@@ -1,6 +1,6 @@
-package com.fatemeh.ecommerce.ecommerce.repository;
+package com.fatemeh.ecommerce.app.repository;
 
-import com.fatemeh.ecommerce.ecommerce.model.Product;
+import com.fatemeh.ecommerce.app.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

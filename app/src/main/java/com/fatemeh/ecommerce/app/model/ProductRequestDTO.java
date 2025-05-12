@@ -1,4 +1,4 @@
-package com.fatemeh.ecommerce.ecommerce.model;
+package com.fatemeh.ecommerce.app.model;
 
 import lombok.Data;
 

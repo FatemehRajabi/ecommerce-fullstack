@@ -1,7 +1,7 @@
-package com.fatemeh.ecommerce.ecommerce.controller;
+package com.fatemeh.ecommerce.app.controller;
 
-import com.fatemeh.ecommerce.ecommerce.model.Category;
-import com.fatemeh.ecommerce.ecommerce.repository.CategoryRepository;
+import com.fatemeh.ecommerce.app.model.Category;
+import com.fatemeh.ecommerce.app.repository.CategoryRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

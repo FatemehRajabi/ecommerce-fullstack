@@ -1,17 +1,11 @@
 package com.fatemeh.ecommerce.app.controller;
 
-import com.fatemeh.ecommerce.app.model.ApiResponse;
-import com.fatemeh.ecommerce.app.model.Role;
-import com.fatemeh.ecommerce.app.model.SignupRequestDTO;
-import com.fatemeh.ecommerce.app.model.User;
+import com.fatemeh.ecommerce.app.model.*;
 import com.fatemeh.ecommerce.app.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -50,6 +44,32 @@ public class AuthController {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequestDTO loginRequestDTO){
+
+        ApiResponse apiResponse = new ApiResponse();
+        if(userRepository.findByUsername(loginRequestDTO.getUsername()).isPresent()){
+            User user = userRepository.findByUsername(loginRequestDTO.getUsername()).get();
+
+            if (bCryptPasswordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())){
+                apiResponse.setMessage("Logged in");
+                apiResponse.setTimestamp(LocalDateTime.now());
+                apiResponse.setSuccess(true);
+            } else {
+                apiResponse.setMessage("Invalid password");
+                apiResponse.setTimestamp(LocalDateTime.now());
+                apiResponse.setSuccess(false);
+            }
+        } else {
+            apiResponse.setMessage("User not found");
+            apiResponse.setTimestamp(LocalDateTime.now());
+            apiResponse.setSuccess(false);
+        }
+        return ResponseEntity.status(apiResponse.isSuccess() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
+                .body(apiResponse);
 
     }
 }

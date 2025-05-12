@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Entity
 @Data
+//user is a reserved keyword in SQL
+@Table(name = "app_user")
 public class User {
 
     @Id

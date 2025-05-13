@@ -1,13 +1,13 @@
 package com.fatemeh.ecommerce.app.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -25,22 +25,25 @@ public class JwtUtil {
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
+
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
 
-    public String generateToken(String username){
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(token);
+            getParser().parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException e) {
             System.out.println("Token expired: " + e.getMessage());
@@ -55,12 +58,12 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return getParser().parseClaimsJws(token).getBody().getSubject();
     }
 
-
+    private JwtParser getParser() {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build();
+    }
 }
